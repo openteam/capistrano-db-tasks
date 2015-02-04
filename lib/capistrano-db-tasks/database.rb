@@ -77,8 +77,7 @@ module Database
     # cleanup = true removes the mysqldump file after loading, false leaves it in db/
     def load(file, cleanup)
       unzip_file = File.join(File.dirname(file), File.basename(file, '.gz'))
-      # @cap.run "cd #{@cap.current_path} && bunzip2 -f #{file} && RAILS_ENV=#{@cap.rails_env} bundle exec rake db:drop db:create && #{import_cmd(unzip_file)}"
-      @cap.run "cd #{@cap.current_path} && bunzip2 -f #{file} && RAILS_ENV=#{@cap.rails_env} && #{import_cmd(unzip_file)}"
+      @cap.run "cd #{@cap.current_path} && gzip -d  #{file} && RAILS_ENV=#{@cap.rails_env} && #{import_cmd(unzip_file)}"
       @cap.run("cd #{@cap.current_path} && rm #{unzip_file}") if cleanup
     end
   end
@@ -93,8 +92,7 @@ module Database
     # cleanup = true removes the mysqldump file after loading, false leaves it in db/
     def load(file, cleanup)
       unzip_file = File.join(File.dirname(file), File.basename(file, '.gz'))
-      # system("bunzip2 -f #{file} && bundle exec rake db:drop db:create && #{import_cmd(unzip_file)} && bundle exec rake db:migrate")
-      system("bunzip2 -f #{file} && #{import_cmd(unzip_file)}")
+      system("gzip -d #{file} && #{import_cmd(unzip_file)}")
       File.unlink(unzip_file) if cleanup
     end
 
